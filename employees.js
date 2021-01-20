@@ -26,6 +26,8 @@ connection.connect(function (err) {
     mainMenu();
 });
 
+// Questions
+// =============================================================
 function mainMenu() {
     inquirer
         .prompt({
@@ -81,6 +83,7 @@ function mainMenu() {
         });
 }
 
+// Function to add an employee
 function addEmployee() {
     connection.query("SELECT * FROM role", function (err, res) {
         if (err) throw err;
@@ -106,7 +109,7 @@ function addEmployee() {
                         for (var i = 0; i < res.length; i++) {
                             options.push(res[i].title);
                         }
-    
+
                         return options;
                     }
                 }
@@ -121,8 +124,9 @@ function addEmployee() {
                         last_name: answer.lastName,
                         role_id: res[0].id
                     });
-                    console.log("\n Employee successfully added");
+                    console.log("\n Employee successfully added!");
                 });
+                mainMenu();
             });
     });
 }
@@ -135,9 +139,53 @@ function addEmployee() {
 
 // }
 
-// function addRole() {
+function addRole() {
+    connection.query("SELECT * from department", function (err, res) {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'roleName',
+                    type: 'input',
+                    message: 'Role Title: '
+                },
+                {
+                    name: 'roleSalary',
+                    type: 'input',
+                    message: 'Role Salary: '
+                },
+                {
+                    name: 'roleDept',
+                    type: 'list',
+                    message: 'Role Department: ',
+                    choices: function () {
+                        let options = [];
 
-// }
+                        for (var i = 0; i < res.length; i++) {
+                            options.push(res[i].name);
+                        }
+
+                        return options;
+                    }
+                }
+            ]).then(function (answer) {
+                let query = "SELECT * FROM department WHERE ?";
+                let query2 = "INSERT INTO role SET ?";
+
+                connection.query(query, { department_name: answer.roleDept }, function (err, res) {
+                    if (err) throw err;
+                    connection.query(query2, {
+                        title: answer.roleName,
+                        salary: parseInt(answer.roleSalary),
+                        department_id: parseInt(res[0].id)
+                    });
+
+                    console.log("\n Role successfully added!");
+                });
+                mainMenu();
+            });
+    });
+};
 
 // function addDept() {
 

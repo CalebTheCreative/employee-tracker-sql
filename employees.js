@@ -73,7 +73,7 @@ function mainMenu() {
                 case 'View All Departments':
                     viewDepts();
                     break;
-                    
+
                 case 'Quit':
                     finish();
                     break;
@@ -129,6 +129,7 @@ function addEmployee() {
     });
 }
 
+// Function to change role of an employee
 function updateRole() {
     let query = "SELECT * FROM employee";
     connection.query(query, function (err, res) {
@@ -186,6 +187,7 @@ function updateRole() {
     });
 }
 
+// Function to create a new role
 function addRole() {
     let query = "SELECT * FROM department";
     connection.query(query, function (err, res) {
@@ -236,6 +238,7 @@ function addRole() {
     });
 };
 
+// Function to add a new department
 function addDept() {
     inquirer
         .prompt({
@@ -255,6 +258,7 @@ function addDept() {
 
 };
 
+// Function to view all employees
 function viewEmployees() {
     let query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
     FROM employee
@@ -271,6 +275,7 @@ function viewEmployees() {
 
 };
 
+// Function to view all roles
 function viewRoles() {
     let query = `SELECT role.title, employee.id, employee.first_name, employee.last_name, department.name AS department
     FROM employee
@@ -286,6 +291,7 @@ function viewRoles() {
 
 };
 
+// Function to view all departments
 function viewDepts() {
     let query = `SELECT department.name AS department, role.title, employee.id, employee.first_name, employee.last_name
     FROM employee
@@ -300,6 +306,7 @@ function viewDepts() {
     })
 };
 
+// Terminal function
 function finish() {
     connection.end();
 };

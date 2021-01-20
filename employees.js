@@ -124,7 +124,7 @@ function addEmployee() {
                         last_name: answer.lastName,
                         role_id: res[0].id
                     });
-                    console.log("\n Employee successfully added!");
+                    console.log("\nEmployee successfully added!");
                 });
                 mainMenu();
             });
@@ -147,17 +147,17 @@ function addRole() {
                 {
                     name: 'roleName',
                     type: 'input',
-                    message: 'Role Title: '
+                    message: 'New Role Title: '
                 },
                 {
                     name: 'roleSalary',
                     type: 'input',
-                    message: 'Role Salary: '
+                    message: 'New Role Salary: '
                 },
                 {
                     name: 'roleDept',
                     type: 'list',
-                    message: 'Role Department: ',
+                    message: 'New Role Department: ',
                     choices: function () {
                         let options = [];
 
@@ -180,16 +180,31 @@ function addRole() {
                         department_id: parseInt(res[0].id)
                     });
 
-                    console.log("\n Role successfully added!");
+                    console.log("\nRole successfully added!");
                 });
                 mainMenu();
             });
     });
 };
 
-// function addDept() {
+function addDept() {
+    inquirer
+        .prompt({
+            name: 'deptName',
+            type: 'input',
+            message: 'New Department Name: '
+        }).then(function(answer) {
+            let query = "INSERT INTO department SET ?";
 
-// }
+            connection.query(query, { name: answer.deptName }, function(err){
+                if (err) throw err;
+            });
+
+            console.log("\nDepartment successfully added!");
+            mainMenu();
+        });
+
+};
 
 // function viewEmployees() {
 

@@ -174,6 +174,7 @@ function addRole() {
 
                 connection.query(query, { name: answer.roleDept }, function (err, res) {
                     if (err) throw err;
+                    
                     connection.query(query2, {
                         title: answer.roleName,
                         salary: parseInt(answer.roleSalary),
@@ -213,6 +214,7 @@ function viewEmployees() {
     INNER JOIN role ON (role.id = employee.role_id)
     INNER JOIN department ON (department.id = role.department_id)
     ORDER BY employee.id;`;
+    
     connection.query(query, function (err, res) {
         if (err) throw err;
         console.table(res);
@@ -222,11 +224,12 @@ function viewEmployees() {
 }
 
 function viewRoles() {
-    var query = `SELECT role.title, employee.id, employee.first_name, employee.last_name, department.name AS department
+    let query = `SELECT role.title, employee.id, employee.first_name, employee.last_name, department.name AS department
     FROM employee
     LEFT JOIN role ON (role.id = employee.role_id)
     LEFT JOIN department ON (department.id = role.department_id)
     ORDER BY role.title;`;
+    
     connection.query(query, function(err, res) {
         if (err) throw err;
         console.table(res);
@@ -235,9 +238,19 @@ function viewRoles() {
 
 }
 
-// function viewDepts() {
+function viewDepts() {
+    let query = `SELECT department.name AS department, role.title, employee.id, employee.first_name, employee.last_name
+    FROM employee
+    LEFT JOIN role ON (role.id = employee.role_id)
+    LEFT JOIN department ON (department.id = role.department_id)
+    ORDER BY department.name;`;
 
-// }
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        mainMenu();
+    })
+}
 
 // function finish() {
 //     connection.end();

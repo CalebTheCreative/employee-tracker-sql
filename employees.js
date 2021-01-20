@@ -106,7 +106,7 @@ function addEmployee() {
                     choices: function () {
                         let options = [];
 
-                        for (var i = 0; i < res.length; i++) {
+                        for (let i = 0; i < res.length; i++) {
                             options.push(res[i].title);
                         }
 
@@ -140,7 +140,7 @@ function addEmployee() {
 // }
 
 function addRole() {
-    connection.query("SELECT * from department", function (err, res) {
+    connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
         inquirer
             .prompt([
@@ -161,7 +161,7 @@ function addRole() {
                     choices: function () {
                         let options = [];
 
-                        for (var i = 0; i < res.length; i++) {
+                        for (let i = 0; i < res.length; i++) {
                             options.push(res[i].name);
                         }
 
@@ -172,7 +172,7 @@ function addRole() {
                 let query = "SELECT * FROM department WHERE ?";
                 let query2 = "INSERT INTO role SET ?";
 
-                connection.query(query, { department_name: answer.roleDept }, function (err, res) {
+                connection.query(query, { name: answer.roleDept }, function (err, res) {
                     if (err) throw err;
                     connection.query(query2, {
                         title: answer.roleName,
@@ -206,9 +206,16 @@ function addDept() {
 
 };
 
-// function viewEmployees() {
+function viewEmployees() {
+    let query = "SELECT * employee.id, employee.first_name, employee.last_name, role.title, role.salary FROM employee_db.employee LEFT JOIN role on role.id";
 
-// }
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        mainMenu();
+    });
+
+}
 
 // function viewRoles() {
 

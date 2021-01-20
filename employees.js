@@ -79,6 +79,7 @@ function mainMenu() {
                     break;
                 case 'Quit':
                     finish();
+                    break;
             }
         });
 }
@@ -132,15 +133,69 @@ function addEmployee() {
 }
 
 // function searchEmployee() {
-
+    
 // }
 
-// function updateRole() {
+function updateRole() {
+    let query = "SELECT * FROM employee";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        inquirer
+            .prompt({
+                name: 'searchName',
+                type: 'list',
+                message: 'Which employee are you updating?',
+                choices: function () {
+                    let options = [];
 
-// }
+                    for (let i = 0; i < res.length; i++) {
+                        options.push(res[i].last_name);
+                    }
+
+                    return options;
+                }
+
+            }).then(function(answer) {
+                query2 = "SELECT * FROM role"
+                
+                connection.query(query2, function (err, res) {
+                    if (err) throw err;
+                    inquirer
+                        .prompt({
+                            name: 'searchRole',
+                            type: 'list',
+                            message: 'Updated Role?',
+                            choices: function () {
+                                let options = [];
+            
+                                for (let i = 0; i < res.length; i++) {
+                                    options.push(res[i].title);
+                                }
+            
+                                return options;
+                            }
+                        }).then(function (answer2) {
+                            let newRole = answer2.searchRole;
+
+                            connection.query("SELECT * FROM role WHERE title = ?", [newRole], function(err, res) {
+                                if (err) throw err;
+                                let query5 = "UPDATE employee SET role_id ? WHERE last_name ?";
+                                connection.query(query5, [res[0].id, answer.searchName], function (err, res, fields) {
+                                    console.log("Role updated");
+                                });
+                                mainMenu();
+                            })
+                        })
+
+                });
+            })
+            
+    });
+}
 
 function addRole() {
-    connection.query("SELECT * FROM department", function (err, res) {
+    let query = "SELECT * FROM department";
+    connection.query(query, function (err, res) {
         if (err) throw err;
         inquirer
             .prompt([
@@ -252,6 +307,6 @@ function viewDepts() {
     })
 }
 
-// function finish() {
-//     connection.end();
-// }
+function finish() {
+    connection.end();
+}

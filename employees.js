@@ -36,7 +36,6 @@ function mainMenu() {
             message: 'What would you like to do?',
             choices: [
                 'Add Employee',
-                'Search For Employee',
                 'Update Employee Role',
                 'Add Role',
                 'Add Department',
@@ -49,10 +48,6 @@ function mainMenu() {
             switch (answer.mainOptions) {
                 case 'Add Employee':
                     addEmployee();
-                    break;
-
-                case 'Search For Employee':
-                    searchEmployee();
                     break;
 
                 case 'Update Employee Role':
@@ -74,9 +69,11 @@ function mainMenu() {
                 case 'View All Roles':
                     viewRoles();
                     break;
+
                 case 'View All Departments':
                     viewDepts();
                     break;
+                    
                 case 'Quit':
                     finish();
                     break;
@@ -132,10 +129,6 @@ function addEmployee() {
     });
 }
 
-// function searchEmployee() {
-    
-// }
-
 function updateRole() {
     let query = "SELECT * FROM employee";
     connection.query(query, function (err, res) {
@@ -184,8 +177,8 @@ function updateRole() {
                                     console.log("Role updated");
                                 });
                                 mainMenu();
-                            })
-                        })
+                            });
+                        });
 
                 });
             })
@@ -276,7 +269,7 @@ function viewEmployees() {
         mainMenu();
     });
 
-}
+};
 
 function viewRoles() {
     let query = `SELECT role.title, employee.id, employee.first_name, employee.last_name, department.name AS department
@@ -291,7 +284,7 @@ function viewRoles() {
         mainMenu();
     });
 
-}
+};
 
 function viewDepts() {
     let query = `SELECT department.name AS department, role.title, employee.id, employee.first_name, employee.last_name
@@ -305,8 +298,8 @@ function viewDepts() {
         console.table(res);
         mainMenu();
     })
-}
+};
 
 function finish() {
     connection.end();
-}
+};

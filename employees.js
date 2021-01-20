@@ -2,7 +2,7 @@
 // =============================================================
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const consoleTable = require("console.table");
+// const consoleTable = require("console.table");
 
 // MySQL Server Initiation
 // =============================================================
@@ -16,98 +16,145 @@ const connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "",
+    password: "Hookem13",
     database: "employee_db"
 });
 
 connection.connect(function (err) {
     if (err) throw err;
+    console.log("connected as id " + connection.threadId + "\n");
     mainMenu();
 });
 
 function mainMenu() {
-    inquirer.prompt({
-      name: 'mainOptions',
-      type: 'list',
-      message: 'What would you like to do?',
-      choices: [
-          'Add Employee',
-          'Search For Employee',
-          'Update Employee Role',
-          'Add Role',
-          'Add Department',
-          'View All Employees',
-          'View All Roles',
-          'View All Departments',
-          'Quit'
-      ]
-    }).then(function(answer) {
-        switch (answer.mainOptions) {
-            case 'Add Employee':
-                addEmployee();
-                break;
+    inquirer
+        .prompt({
+            name: 'mainOptions',
+            type: 'list',
+            message: 'What would you like to do?',
+            choices: [
+                'Add Employee',
+                'Search For Employee',
+                'Update Employee Role',
+                'Add Role',
+                'Add Department',
+                'View All Employees',
+                'View All Roles',
+                'View All Departments',
+                'Quit'
+            ]
+        }).then(function (answer) {
+            switch (answer.mainOptions) {
+                case 'Add Employee':
+                    addEmployee();
+                    break;
 
-            case 'Search For Employee':
-                searchEmployee();
-                break;
+                case 'Search For Employee':
+                    searchEmployee();
+                    break;
 
-            case 'Update Employee Role':
-                updateRole();
-                break;
+                case 'Update Employee Role':
+                    updateRole();
+                    break;
 
-            case 'Add Role':
-                addRole();
-                break;
+                case 'Add Role':
+                    addRole();
+                    break;
 
-            case 'Add Department':
-                addDept();
-                break;
+                case 'Add Department':
+                    addDept();
+                    break;
 
-            case 'View All Employees':
-                viewEmployees();
-                break;
+                case 'View All Employees':
+                    viewEmployees();
+                    break;
 
-            case 'View All Roles':
-                viewRoles();
-                break;
-            case 'View All Departments':
-                viewDepts();
-                break;
-            case 'Quit':
-                finish();
-        }
-    });
+                case 'View All Roles':
+                    viewRoles();
+                    break;
+                case 'View All Departments':
+                    viewDepts();
+                    break;
+                case 'Quit':
+                    finish();
+            }
+        });
 }
 
 function addEmployee() {
+    connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'firstName',
+                    type: 'input',
+                    message: 'First Name: '
+                },
+                {
+                    name: 'lastName',
+                    type: 'input',
+                    message: 'Last Name: '
+                },
+                {
+                    name: 'empRole',
+                    type: 'list',
+                    message: 'Role: ',
+                    choices: function () {
+                        let options = [];
 
-}
-
-function searchEmployee() {
-
-}
-
-function updateRole() {
-
-}
-
-function addRole() {
-
-}
-
-function addDept() {
-
-}
-
-function viewEmployees() {
-
-}
-
-function viewRoles() {
+                        for (var i = 0; i < res.length; i++) {
+                            options.push(res[i].title);
+                        }
     
+                        return options;
+                    }
+                }
+            ]).then(function (answer) {
+                let query = "SELECT * FROM role WHERE ?";
+                let query2 = "INSERT INTO employee SET ?";
+
+                connection.query(query, { title: answer.empRole }, function (err, res) {
+                    if (err) throw err;
+                    connection.query(query2, {
+                        first_name: answer.firstName,
+                        last_name: answer.lastName,
+                        role_id: res[0].id
+                    });
+                    console.log("\n Employee successfully added");
+                });
+            });
+    });
 }
 
-function viewDepts() {
+// function searchEmployee() {
 
-}
+// }
 
+// function updateRole() {
+
+// }
+
+// function addRole() {
+
+// }
+
+// function addDept() {
+
+// }
+
+// function viewEmployees() {
+
+// }
+
+// function viewRoles() {
+
+// }
+
+// function viewDepts() {
+
+// }
+
+// function finish() {
+//     connection.end();
+// }
